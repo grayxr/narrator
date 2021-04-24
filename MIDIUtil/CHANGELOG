@@ -1,0 +1,134 @@
+Date:       4 March 2018
+Version:    1.2.1
+
+    * Fairly major restructuring of the code contributed by meteorsw, including:
+      * Removing the MIDIEvent class and subsuming functionality in GenericEvent
+        and derivative classes.
+      * Allowing for the specification of times in MIDI ticks, as well as quarter
+        notes.
+      * General clean-up and restructuring. Logic on how an event serializes itself
+        to the MIDI stream is now associated directly with the object.
+      * Renaming of some variable to be less confusing to users.
+      * Placing comparison operators in the derived classes of GenericEvent, where
+        they really belong.
+      * Addition of channel pressure event.
+    * Clarifications on documentation.
+    * Added pitch bend support with `addPitchWheelEvent`.
+
+Date:       6 March 2017
+Version:    1.1.3
+
+    A code clean-up release. Not much in the way of new features.
+
+    * Documentation changes, typo corrections, etc.
+    * Simplify the importation of the library. It's now possible to just:
+
+        from midiutil import MIDIFile
+
+      which seems somewhat easier.
+    * Some formatting and cleanup work (PEP-ish stuff).
+    * Added Python 3.6 testing/support.
+    * Removed support for Python 2.6. All good things eventually come to an
+      end
+
+Date:       28 September 2016
+Version:    1.1.1
+
+    * Just a couple of typo's corrected (what's a "but fix" anyway?),
+      and the display of README.rst on Pypi.
+
+Version:    1.1.0
+    * Allow for the specification of either MIDI format 1 or 2 files.
+      Note that in previous versions of the code the file being
+      written was format 2, but it was identified as format 1.
+      This error has been corrected. The default format for the file
+      is 1, which is the most widely supported format.
+    * Increased test coverage.
+    * Fixed bug in MIDIFile for `adjust_origin` = `False`
+    * Added ability to order RPC and NRPC sub-events in time, as
+      a work-around for sequencers that aren't good about preserving
+      event ordering for events at the time time.
+    * Updates to documentation.
+    * Added Travis CI to the build process. Verifying operation
+      on python 2.6 - 3 development version.
+    * Functions added:
+        * `addTimeSignature()`
+        * `addCopyright()`
+        * `addText()`
+        * `addKeySignature()`
+
+Date:       23 September 2016
+Version:    1.0.1
+    * Minor updates to build system so that code can be hosted at
+      Pypi (https://pypi.python.org/pypi/MIDIUtil/).
+
+Date:       23 September 2016
+Version:    1.0.0
+    * Code ported to GitHub
+    * Extensive updates to documentation, ported to Sphinx.
+    * Added ability to *not* adjust the MIDIFile's time origin.
+      Default behaviour is maintained, but will change in a future
+      version (by default the origin is currently adjusted).
+    * Changed the controller event parameter names to make them
+      clearer.
+    * Added support for Registered and Non-Registered parameter
+      calls (``makeRPNCall`` and ``makeNRPNCall``).
+    * General refactoring and clean-up.
+    * Added function to select tuning program and bank.
+      Some synthesizers, such as fluidsynth, require that
+      uploaded tunings be explicitly assigned to a channel.
+      This can be used after ``setNoteTuning`` in such a
+      case.
+    * Completed port to Python 3 / Unification of code base.
+      Support for python < 2.6 has been dropped so that the
+      Python 2 and 3 codebases could be unified.
+    * Changes the way that sorting works, simplifying it and making
+      it more expressive. The primary sort is on time; secondary on 
+      ordinality for the event (which is user-definable, but defaults
+      to an ordinality for the class); and the 
+      third is the order in which the events were added.  Thus 
+      is becomes easier to, say, make an RPN call, which entails 
+      and ordered series of control change events all occurring at the 
+      same time and of the same type.
+    * Added 'annotation' as a parameter to note addition function. 
+      This can be used to attach an arbitrary python object to the 
+      note event. This is useful for extension development.
+
+Date:       1 December 2013
+Version:    0.89
+    * Updated MIDIFile to support non-integral note values better.
+    * Changed default temporal resolution to 960 ticks per beat.
+    * Updated Python3 support. It is still somewhat experimental.
+    * Misc. Bug Fixes.
+
+
+Date:       20 October 2009
+Version:    0.87
+
+    First public release.
+
+    * Tweaked email address in contact information.
+    * Added/updated documentation.
+    * Tweaked the setup.py file to produce better distributions.
+
+Date:       9 October 2009
+Version:    0.86
+
+    * added addNote as main interface into package (not
+      addNoteByNumber). It's been a while since I've cut a release,
+      so there may be other things that have happened.
+
+    * Created distutils package.
+
+    * Minor code clean-up.
+
+    * Added documentation in-line and in text (MIDIFile.txt).
+
+    * All public functions should now be accessed thought
+      MIDIFile directly, and not the component tracks.
+
+Date:    15 January 2009
+Version:    0.85
+
+    * Split out from existing work as a separate project.
+
