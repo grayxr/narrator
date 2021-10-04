@@ -1,1 +1,2 @@
-*ttm-output-*.mid
+**/ttm-output-*.mid
+**/.DS_Store
