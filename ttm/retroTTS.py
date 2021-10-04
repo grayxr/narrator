@@ -8,7 +8,7 @@
 #
 # As this is based heavily on Public Domain work, this code is relased as public domain.
 #
-# Ensure retroSpeak.py, en_US_rules.py and vocabulary.py are in the path or
+# Ensure retroSpeak.py, en_US_rules.py and vocabulary.py are in the path or 
 # same directory as this script
 #
 # Jason Lane 2015
@@ -24,7 +24,7 @@
 # to the allophone set used by the SP0256-AL2 in the retroSpeak project
 #
 #   The Phoneme codes (US English):
-#
+# 
 #           IY      bEEt            IH      bIt
 #           EY      gAte            EH      gEt
 #           AE      fAt             AA      fAther
@@ -49,34 +49,34 @@
 #
 #
 #   Rules are made up of four parts:
-#
+#   
 #           The left context.
 #           The text to match.
 #           The right context.
 #           The phonemes to substitute for the matched text.
 #
 #   Procedure:
-#
-#           Seperate each block of letters (apostrophes included)
-#           and add a space on each side.  For each unmatched
-#           letter in the word, look through the rules where the
-#           text to match starts with the letter in the word.  If
-#           the text to match is found and the right and left
-#           context patterns also match, output the phonemes for
+# 
+#           Seperate each block of letters (apostrophes included) 
+#           and add a space on each side.  For each unmatched 
+#           letter in the word, look through the rules where the 
+#           text to match starts with the letter in the word.  If 
+#           the text to match is found and the right and left 
+#           context patterns also match, output the phonemes for 
 #           that rule and skip to the next unmatched letter.
-#
-#
+# 
+# 
 #   Special Context Symbols:
-#
+# 
 #           #       One or more vowels
 #           :       Zero or more consonants
 #           ^       One consonant.
-#           .       One of B, D, V, G, J, L, M, N, R, W or Z (voiced
+#           .       One of B, D, V, G, J, L, M, N, R, W or Z (voiced 
 #                   consonants)
 #           %       One of ER, E, ES, ED, ING, ELY (a suffix)
 #                   (Found in right context only)
 #           +       One of E, I or Y (a "front" vowel)
-#
+# 
 
 
 import argparse
@@ -84,7 +84,6 @@ import argparse
 # import retroSpeak
 from en_US_rules import Rules
 from vocabulary import *
-from midiutil import MIDIFile
 
 # Parts of rules
 leftPart = 0
@@ -112,16 +111,16 @@ def translateWord(t_word):
             letter_rules = Rules[t_word[index]]
         else:
             letter_rules = Rules['punctuation']
-        index, t_phoneme = findRule(t_word, index, letter_rules)
-        if t_phoneme != '':
-            t_phonemes = t_phonemes + ' ' + t_phoneme
+        index, phoneme = findRule(t_word, index, letter_rules)
+        if phoneme != '':
+            t_phonemes = t_phonemes + ' ' + phoneme
     return t_phonemes.split()
 
 
 def findRule(r_word, index, rules):
     # Find the matching rule for the character in the word
     # index is the position of the character to check
-    # rules is a list of the rules corresponding to the character
+    # rules is a list of the rules corresponding to the character    
     # Find a matching centre pattern, then check the left and right patterns
     # Left hand pattern and text is reversed, as the test moves away from centre character
     # If all 3 tests match, return the index of the remainder of the word, and the
@@ -137,7 +136,7 @@ def findRule(r_word, index, rules):
             # Check for left match and right match
             if lrMatch(left_rule, left_word) and lrMatch(right_rule, right_word, right=True):
                 return remainder, rule[outPart]
-    # Rule not Found
+    # Rule not Found        
     print("Error: Can't find rule for '{}' in '{}'".format(word[index],word))
     return index+1, ''
 
@@ -238,101 +237,26 @@ def IPAtoSP0256(ipa_phonemes):
     return sp0256
 
 
-# Create the MIDIFile Object
-MyMIDI = MIDIFile(1)
-
-# Add track name and tempo. The first argument to addTrackName and
-# addTempo is the time to write the event.
-track = 0
-time = 0
-MyMIDI.addTrackName(track, time, "Sample Track")
-MyMIDI.addTempo(track, time, 120)
-
-# Add a note. addNote expects the following information:
-channel = 0
-pitch = 60
-duration = 0.25
-volume = 100
-
 parser = argparse.ArgumentParser(description='Simple Text to Speech')
 parser.add_argument('text', metavar='text', nargs=argparse.REMAINDER, help='Text to speak')
 args = parser.parse_args()
 
-# words_all = args.text
-words_all = """sonic sand castles"""
-words_all = words_all.split()
-
 phonemes = ''
-for word in words_all:
+for word in args.text:
     if word.lower() in vocabulary:
         phonemes = phonemes + ' ' + vocabulary[word.lower()]
     else:
         phonemes = phonemes + ' ' + ' '.join(IPAtoSP0256(translateWord(word.upper())))
     phonemes = phonemes + ' PA4'
 
-print phonemes
+# if args.verbose or args.silent:
 
-note_dict = {
-    'AA': 24,
-    'AE': 26,
-    'AX': 15,
-    'AO': 23,
-    'AW': 32,
-    'AY': 6,
-    'BB1': 28,
-    'CH': 50,
-    'DD1': 21,
-    'DH1': 18,
-    'EH': 7,
-    'ER1': 51,
-    'EY': 20,
-    'FF': 40,
-    'GG2': 61,
-    'HH1': 27,
-    'IH': 12,
-    'IY': 19,
-    'JH': 10,
-    'KK1': 42,
-    'LL': 45,
-    'MM': 16,
-    'NN1': 11,
-    'NG': 44,
-    'OW': 53,
-    'OY': 5,
-    'PP': 9,
-    'RR1': 14,
-    'SS': 55,
-    'SH': 37,
-    'TT1': 17,
-    'TH': 29,
-    'UH': 30,
-    'UW2': 31,
-    'VV': 35,
-    'WW': 46,
-    'WH': 48,
-    'YY1': 49,
-    'ZZ': 43,
-    'ZH': 38,
-    'PA4': 3
-}
+# print phonemes
 
-note_pitches = []
-for phoneme in phonemes.split():
-    if phoneme in note_dict:
-        note_pitches.append(note_dict[phoneme])
-        print note_dict[phoneme]
-    else:
-        print 'not found!'
+# if not(args.silent):
+#     # Initialise retroSpeak board
+#     speech = retroSpeak.retroSpeak(clock=args.mhz,device=args.board)
+#     speech.speakAndWait(phonemes)
 
-# Now add the note.
-# And write it to disk.
 
-for i, note_pitch in enumerate(note_pitches):
-    MyMIDI.addNote(track, channel, note_pitch, time + i * 0.25, duration, volume)
 
-with open("output.mid", 'wb') as binfile:
-     MyMIDI.writeFile(binfile)
-
-# MyMIDI.addNote(track, channel, pitch, time, duration, volume)
-# with open("output.mid", 'wb') as binfile:
-#     MyMIDI.writeFile(binfile)
