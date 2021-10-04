@@ -17,6 +17,7 @@ $ pip install MIDIUtil
 ```
 $ python ttm/convert.py hello world
 ```
+A `ttm-output-<timestamp>.mid` file will be generated, which can be used by your DAW / MIDI tool of choice.
 
 ## License
 
